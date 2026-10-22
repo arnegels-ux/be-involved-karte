@@ -88,6 +88,12 @@ button,input,select,textarea{font:inherit;color:inherit}
 .fcount b{color:var(--fg);font-weight:600}
 .linkbtn{background:none;border:0;color:var(--accent-ink);cursor:pointer;font-size:13px;text-decoration:underline;text-underline-offset:3px;padding:0}
 
+.fbtn{display:none;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--line-strong);border-radius:4px;background:var(--land);cursor:pointer;font-size:13.5px;flex:none}
+.fbtn b{font-family:var(--f-mono);font-weight:400;font-size:11px;background:var(--accent);color:#fff;border-radius:999px;padding:0 6px;line-height:17px}
+.fbtn b:empty{display:none}
+.tolist{display:none;position:absolute;right:10px;bottom:10px;z-index:800;align-items:center;gap:6px;border:0;border-radius:999px;background:var(--accent);color:#fff;padding:10px 16px;font-size:14px;font-weight:500;box-shadow:var(--shadow);cursor:pointer}
+.mback{display:none;position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);padding:8px 16px}
+.mback button{background:none;border:0;color:var(--accent-ink);font-size:14px;font-weight:500;cursor:pointer;padding:4px 0}
 /* Karte + Spalte */
 .mapwrap{display:grid;grid-template-columns:minmax(0,1fr) 400px;min-height:0}
 .mapcell{position:relative;min-height:0;background:var(--bg)}
@@ -170,7 +176,7 @@ h3{font-size:19px;line-height:1.25}
 .catline span{display:inline-flex;align-items:center;gap:6px}
 .meta{font-size:13px;color:var(--fg-soft);margin-top:6px}
 .score{display:flex;align-items:center;gap:12px;margin:16px 0 4px;padding:12px 14px;background:var(--accent-soft);border-radius:4px}
-.score .big{font-family:var(--f-display);font-size:30px;color:var(--accent-ink);line-height:1;font-variant-numeric:tabular-nums}
+.score .big{white-space:nowrap;font-family:var(--f-display);font-size:30px;color:var(--accent-ink);line-height:1;font-variant-numeric:tabular-nums}
 .score p{margin:0;font-size:13px;color:var(--accent-ink)}
 .score.no{background:var(--bg)}
 .score.no .big,.score.no p{color:var(--fg-soft)}
@@ -284,21 +290,30 @@ td:first-child{font-weight:500}
 @media (max-width:1150px){.mapwrap{grid-template-columns:minmax(0,1fr) 330px}.nav{gap:16px}.nav button{font-size:14px}.who span{display:none}}
 @media (max-width:980px){.two,.qgrid{grid-template-columns:1fr}.stick{position:static}}
 @media (max-width:900px){
-  .app{height:auto;display:block}
-  .view{overflow:visible}
-  #v-karte{display:block}
-  .mapwrap{grid-template-columns:minmax(0,1fr)}
-  .mapcell{height:62vh;min-height:380px}
-  .side{border-left:0;border-top:1px solid var(--line)}
-  .top{gap:12px;flex-wrap:wrap}
-  .brand img{height:36px}
-  .nav{order:3;flex-basis:100%;gap:18px}
-  .who span{display:none}
-  .legend{max-width:210px;font-size:11.5px}
+  .top{gap:14px;padding-block:8px}
+  .brand img{height:32px;width:auto}
+  .who{display:none}
+  .nav{gap:16px}.nav button{font-size:14px}
+  .filters{padding-block:10px;gap:8px}
+  .filters .chips{flex-basis:100%;order:3}
+  .search{max-width:none;flex:1 1 0;min-width:0}
+  .fbtn{display:inline-flex}
+  .filters .frow.more{display:none}
+  .filters.open .frow.more{display:flex}
+  .fcount{display:none}
+  .filters.open .fcount{display:block;flex-basis:100%;margin-left:0}
+  .sel{flex:1 1 150px}
+  .mapwrap{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  .side{display:none;border-left:0}
+  #v-karte.list .mapcell{display:none}
+  #v-karte.list .side{display:block}
+  .tolist,.mback{display:flex}
   .zlevel{display:none}
-  .fcount{margin-left:0;flex-basis:100%}
+  .legend{max-width:190px;font-size:11.5px;left:10px;bottom:10px}
+  .mctl{left:10px;top:10px}
   .grid2{grid-template-columns:1fr}
   .flow{grid-template-columns:1fr 1fr}
+  .page{padding-block:20px 40px}
 }
 </style>
 
@@ -325,9 +340,10 @@ td:first-child{font-weight:500}
         <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           <input id="q" type="search" list="cityList" placeholder="Ort oder Stichwort, z. B. Hameln, Festival" aria-label="Suche nach Ort oder Stichwort"></label>
         <datalist id="cityList"></datalist>
+        <button type="button" class="fbtn" id="fToggle" aria-expanded="false">Filter <b id="fN"></b></button>
         <div class="chips" id="catChips" role="group" aria-label="Themen filtern"></div>
       </div>
-      <div class="frow">
+      <div class="frow more">
         <select class="sel" id="fSup" aria-label="Unterstützungsart"></select>
         <select class="sel" id="fReach" aria-label="Reichweite"></select>
         <select class="sel" id="fGroup" aria-label="Zielgruppe"></select>
@@ -349,8 +365,9 @@ td:first-child{font-weight:500}
         </div>
         <div class="zlevel" id="zlevel" aria-live="polite"><span data-l="0">Bund</span><span data-l="1">Land</span><span data-l="2">Region</span><span data-l="3">Stadt &amp; Kiez</span></div>
         <div class="legend" id="legend"></div>
+        <button type="button" class="tolist" id="toList">Liste</button>
       </div>
-      <aside class="side" id="side" aria-live="polite"></aside>
+      <aside class="side" id="side"><div class="mback"><button type="button" id="toMap">← Zur Karte</button></div><div id="sideBody" aria-live="polite"></div></aside>
     </div>
   </section>
 
@@ -1188,6 +1205,14 @@ function updateLabels(){
 }
 map.on('zoomend',updateLabels);
 
+/* ---------- Mobil ---------- */
+const isMobile=()=>window.matchMedia('(max-width:900px)').matches;
+let pendingView=null;
+function setList(on){$('#v-karte').classList.toggle('list',on);if(!on)setTimeout(()=>{map.invalidateSize();if(pendingView){pendingView();pendingView=null}},0);else $('#side').scrollTop=0}
+function mapMove(fn){if(isMobile()&&$('#v-karte').classList.contains('list'))pendingView=fn;else fn()}
+$('#toList').onclick=()=>setList(true);$('#toMap').onclick=()=>setList(false);
+$('#fToggle').onclick=()=>{const f=$('.filters');const o=!f.classList.contains('open');f.classList.toggle('open',o);$('#fToggle').setAttribute('aria-expanded',o);setTimeout(()=>map.invalidateSize(),0)};
+
 /* ---------- Filterleiste ---------- */
 $('#cityList').innerHTML=CITIES.slice().sort((a,b)=>a.name.localeCompare(b.name,'de')).map(c=>`<option value="${esc(c.name)}">`).join('');
 $('#catChips').innerHTML=CATS.map(c=>`<button type="button" class="chip" data-id="${c.id}" aria-pressed="false">${pdot(c.id)}${c.label}</button>`).join('');
@@ -1199,7 +1224,7 @@ $('#fOnly').onchange=e=>{F.only=e.target.checked;refresh()};$('#fKomm').onchange
 let qT;$('#q').oninput=e=>{clearTimeout(qT);qT=setTimeout(()=>{F.q=e.target.value;const c=CITY[F.q.trim()];if(c)map.flyTo([c.lat,c.lng],11,{duration:.8});refresh()},200)};
 $('#q').onkeydown=e=>{if(e.key==='Enter'){const v=e.target.value.trim().toLowerCase();const c=CITIES.find(x=>x.name.toLowerCase().startsWith(v));if(c)map.flyTo([c.lat,c.lng],11,{duration:.8})}};
 $('#fReset').onclick=()=>{F.q='';F.cats.clear();F.sup=F.reach=F.group=F.eng='';F.only=false;$('#q').value='';['#fSup','#fReach','#fGroup','#fEng'].forEach(s=>$(s).value='');$('#fOnly').checked=false;document.querySelectorAll('#catChips .chip').forEach(b=>b.setAttribute('aria-pressed','false'));refresh()};
-function updateCounts(){const m=VIS.filter(o=>MATCH.get(o.id).ok).length;$('#fcount').innerHTML=`<b>${VIS.length}</b> von ${LIVE().length} Angeboten sichtbar · <b>${m}</b> passend zu deinem Profil`}
+function updateCounts(){const m=VIS.filter(o=>MATCH.get(o.id).ok).length;$('#toList').textContent='Liste · '+m+' Treffer';const n=[F.sup,F.reach,F.group,F.eng].filter(Boolean).length+(F.only?1:0);$('#fN').textContent=n||'';$('#fcount').innerHTML=`<b>${VIS.length}</b> von ${LIVE().length} Angeboten sichtbar · <b>${m}</b> passend zu deinem Profil`}
 function renderLegend(){
  const cnt={};VIS.forEach(o=>{const r=MATCH.get(o.id);if(r.ok){const t=r.th[0];cnt[t]=(cnt[t]||0)+1}});
  const non=VIS.filter(o=>!MATCH.get(o.id).ok).length;
@@ -1231,14 +1256,14 @@ function renderSide(){
  if(listMode==='engagiert')body=eng.length?`<div class="pad" style="padding-top:4px"><p class="note" style="margin:0 0 10px">Unternehmen und Stiftungen, die sich in deinem Umkreis sichtbar engagieren.</p>${eng.map(supCard).join('')}</div>`:'<div class="empty">Noch keine sichtbaren Engagements in deinem Umkreis.</div>';
  else body=list.length?`<ul class="list">${list.map(({o,r})=>{const e=engOf(o.id).filter(x=>SUPID[x.sid].pub);return `<li class="item" data-o="${o.id}" tabindex="0">${pdot(shownTheme(o,r))}<div><div class="t">${esc(o.title)}</div><div class="m">${esc(o.org)} · ${esc(o.city)} · ${km(r.d)}</div><div class="tags">${o.tags.slice(0,2).map(t=>`<span class="tag hl">${esc(t)}</span>`).join('')}${e.length?`<span class="tag on">Unterstützt von ${esc(SUPID[e[0].sid].name)}${e.length>1?' +'+(e.length-1):''}</span>`:''}</div></div><div class="s">${r.ok?r.score+' %':'–'}<small>${r.ok?'Passung':'kein Treffer'}</small></div></li>`}).join('')}</ul>`
   :`<div class="empty">${listMode==='saved'?'Noch nichts gemerkt. Öffne ein Angebot und tippe auf „Merken“.':listMode==='ueberregional'&&!profile.ueber?'Überregionale Vorschläge sind in deinem Profil ausgeschaltet.':'Keine Treffer mit den aktuellen Filtern. Setze Filter zurück oder erweitere dein Profil.'}</div>`;
- $('#side').innerHTML=`${welcomeOff?'':`<div class="welcome"><button class="x" id="wOff" aria-label="Einstieg ausblenden">×</button><p><b>Willkommen.</b> Wie möchtest du dich einbringen?</p><div class="acts">
+ $('#sideBody').innerHTML=`${welcomeOff?'':`<div class="welcome"><button class="x" id="wOff" aria-label="Einstieg ausblenden">×</button><p><b>Willkommen.</b> Wie möchtest du dich einbringen?</p><div class="acts">
   <button data-go="profil">Ich möchte unterstützen <span>Profil anlegen</span></button><button data-go="einreichen">Wir haben ein Angebot <span>Eintrag anlegen</span></button><button data-go="kommune">Wir sind eine Kommune <span>Positionieren</span></button></div></div>`}
  <div class="pad"><p class="eyebrow">Für dein Profil</p><h3>${esc(profile.name)}</h3><p class="lead">${esc(profile.city)} · ${profile.radius} km Umkreis${profile.ueber?' · auch überregional':''}</p>
  <div class="profsum">${profile.themes.map(t=>`<span class="tag">${pdot(t)}${esc(L_(CATS,t))}</span>`).join('')}</div>
  <div class="seg" role="group" aria-label="Trefferliste">${[['regional','Regional',reg.length],['ueberregional','Überregional',ueb.length],['engagiert','Engagierte',eng.length],['saved','Gemerkt',sav.length]].map(([id,l,n])=>`<button data-m="${id}" aria-pressed="${listMode===id}">${l}<b>${n}</b></button>`).join('')}</div></div>${body}`;
  const wo=$('#wOff');if(wo)wo.onclick=()=>{welcomeOff=true;store.set('welcomeOff',true);renderSide()};
- $('#side').querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{listMode=b.dataset.m;renderSide()});
- bindItems($('#side'));
+ $('#sideBody').querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{listMode=b.dataset.m;renderSide()});
+ bindItems($('#sideBody'));
 }
 function bindItems(root){
  root.querySelectorAll('[data-o]').forEach(li=>{li.onclick=()=>{go('karte');selectOffer(+li.dataset.o,true)};li.onkeydown=e=>{if(e.key==='Enter')li.click()}});
@@ -1262,7 +1287,7 @@ function renderOffer(id){
  const pct=o.need.amount?Math.round(o.need.secured/o.need.amount*100):0;
  const supCount=SUPPORTERS.filter(s=>match(s,o).ok).length;
  const eng=engOf(id);const engPub=eng.filter(e=>SUPID[e.sid].pub);
- $('#side').innerHTML=`<div class="pad"><button class="back" id="bk">← Zurück zur Liste</button>
+ $('#sideBody').innerHTML=`<div class="pad"><button class="back" id="bk">← Zurück zur Liste</button>
  <div class="catline">${themeLine(o)}${o.mine?'<b>· Dein Eintrag</b>':''}</div>
  <h2>${esc(o.title)}</h2><p class="meta">${esc(o.org)} · ${esc(o.city)} · ${esc(L_(REACH,o.reach))} · ${esc(L_(PERIODS,o.period))}</p>
  <div class="score${r.ok?'':' no'}"><span class="big">${r.ok?r.score+' %':'–'}</span><p>${r.ok?(r.scope==='regional'?'Passt zu deinem Profil, in deiner Region.':'Passt zu deinem Profil, überregional.'):'Passt nicht zu deinem Profil. Unten siehst du, warum.'}</p></div>
@@ -1282,16 +1307,16 @@ function renderOffer(id){
  $('#bk').onclick=()=>{selected=null;renderPoints();renderSide()};
  $('#sv').onclick=()=>{saved.has(id)?saved.delete(id):saved.add(id);store.set('saved',[...saved]);renderOffer(id)};
  $('#ask').onclick=()=>{$('#askMsg').innerHTML=`<div class="okmsg">Anfrage vorbereitet für ${esc(o.org)}. Im Prototyp wird keine Nachricht verschickt; in der Plattform landet sie im Postfach des Vereins, mit eurem Profil und der Passung als Gesprächsgrundlage.</div>`};
- bindItems($('#side'));$('#side').scrollTop=0;
+ bindItems($('#sideBody'));$('#side').scrollTop=0;
 }
 function renderSup(sid){
  const s=SUPID[sid];const e=engBy(sid);
- $('#side').innerHTML=`<div class="pad"><button class="back" id="bk">← Zurück zur Liste</button>
+ $('#sideBody').innerHTML=`<div class="pad"><button class="back" id="bk">← Zurück zur Liste</button>
  <p class="eyebrow">${esc(L_(PTYPES,s.type))} · engagiert sich sichtbar</p><h2>${esc(s.name)}</h2><p class="meta">${esc(s.city)}</p>
  <div class="profsum">${s.themes.map(t=>`<span class="tag">${pdot(t)}${esc(L_(CATS,t))}</span>`).join('')}</div>
  <div class="sec"><h4>Engagiert bei</h4><p class="note" style="margin:0 0 6px">Auf der Karte lila umrandet.</p><ul class="mini">${e.map(x=>{const o=OFFERS.find(y=>y.id===x.oid);return `<li data-o="${o.id}" tabindex="0">${pdot(o.themes[0])}<span class="tt">${esc(o.title)} <span style="color:var(--fg-soft)">· ${esc(o.city)}</span></span><span class="km">${esc(SUP.find(y=>y.id===x.kind).short)}</span></li>`}).join('')}</ul></div>
  <div class="sec"><h4>Unterstützt mit</h4><div class="profsum" style="margin:0">${s.support.map(x=>`<span class="tag">${esc(L_(SUP,x))}</span>`).join('')}</div></div></div>`;
- $('#bk').onclick=()=>{selected=null;hlSid=null;renderPoints();renderSide()};bindItems($('#side'));$('#side').scrollTop=0;
+ $('#bk').onclick=()=>{selected=null;hlSid=null;renderPoints();renderSide()};bindItems($('#sideBody'));$('#side').scrollTop=0;
 }
 function kommStats(k){
  const c=CITY[k.city];const inArea=LIVE().filter(o=>dist(c,o)<=k.radius);
@@ -1303,7 +1328,7 @@ function kommStats(k){
 }
 function renderKomm(id){
  const k=KOMMUNEN.concat(myKommune?[myKommune]:[]).find(x=>x.id===id);const st=kommStats(k);
- $('#side').innerHTML=`<div class="pad"><button class="back" id="bk">← Zurück zur Liste</button>
+ $('#sideBody').innerHTML=`<div class="pad"><button class="back" id="bk">← Zurück zur Liste</button>
  <p class="eyebrow">Kommune${k.mine?' · deine Positionierung':''}</p><h2>${esc(k.city)}</h2><p class="uspx">${esc(k.claim)}</p>
  <div class="stat"><div><b>${st.inArea.length}</b><span>Angebote im Gebiet</span></div><div><b>${st.open.length}</b><span>mit offenem Bedarf</span></div><div><b>${st.sup}</b><span>passende Unterstützende</span></div></div>
  <div class="sec"><h4>Herausforderungen</h4><div class="profsum" style="margin:0">${k.ch.map(x=>`<span class="tag hl">${esc(L_(CH,x))}</span>`).join('')}</div></div>
@@ -1312,11 +1337,11 @@ function renderKomm(id){
  <div class="sec"><h4>Passende Angebote im Gebiet</h4>${st.fit.length?miniList(st.fit.slice(0,6).map(x=>({x,d:dist(st.c,x)}))):'<p class="note" style="margin:0">Noch keine.</p>'}</div>
  <div class="sec"><h4>Engagiert im Gebiet</h4>${st.eng.length?st.eng.slice(0,4).map(supCard).join(''):'<p class="note" style="margin:0">Noch keine sichtbaren Engagements.</p>'}</div>
  <p class="note">Ansprechstelle: ${esc(k.contact)}</p></div>`;
- $('#bk').onclick=()=>{selected=null;renderKommunen();renderSide()};bindItems($('#side'));$('#side').scrollTop=0;
+ $('#bk').onclick=()=>{selected=null;renderKommunen();renderSide()};bindItems($('#sideBody'));$('#side').scrollTop=0;
 }
-function selectOffer(id,fly){selected={type:'offer',id};hlSid=null;const o=OFFERS.find(x=>x.id===id);renderPoints();renderSide();if(fly)map.flyTo([o.lat,o.lng],Math.max(map.getZoom(),10.5),{duration:.8})}
-function selectKommune(id){selected={type:'komm',id};hlSid=null;renderPoints();renderKommunen();renderSide()}
-function selectSup(sid){selected={type:'sup',id:sid};hlSid=sid;renderPoints();renderSide();const pts=engBy(sid).map(e=>{const o=OFFERS.find(x=>x.id===e.oid);return [o.lat,o.lng]});if(pts.length)map.flyToBounds(L.latLngBounds(pts).pad(.6),{maxZoom:10,duration:.8})}
+function selectOffer(id,fly){selected={type:'offer',id};hlSid=null;const o=OFFERS.find(x=>x.id===id);renderPoints();renderSide();if(isMobile())setList(true);if(fly)mapMove(()=>map.flyTo([o.lat,o.lng],Math.max(map.getZoom(),10.5),{duration:.8}))}
+function selectKommune(id){selected={type:'komm',id};hlSid=null;renderPoints();renderKommunen();renderSide();if(isMobile())setList(true)}
+function selectSup(sid){selected={type:'sup',id:sid};hlSid=sid;renderPoints();renderSide();const pts=engBy(sid).map(e=>{const o=OFFERS.find(x=>x.id===e.oid);return [o.lat,o.lng]});if(pts.length)mapMove(()=>map.flyToBounds(L.latLngBounds(pts).pad(.6),{maxZoom:10,duration:.8}))}
 function refresh(){computeMatches();if(selected&&selected.type==='offer'&&!visibleOffers().some(o=>o.id===selected.id))selected=null;renderPoints();renderSide();updateLabels()}
 $('#zin').onclick=()=>map.zoomIn();$('#zout').onclick=()=>map.zoomOut();
 $('#zde').onclick=()=>map.flyToBounds(land.getBounds(),{padding:[16,16],duration:.8});
