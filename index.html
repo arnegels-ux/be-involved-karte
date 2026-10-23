@@ -45,7 +45,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-variant
 *{box-sizing:border-box}
 button,input,select,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.app{height:100%;display:grid;grid-template-rows:auto 1fr;grid-template-columns:minmax(0,1fr);min-height:0}
+.app{height:100%;display:grid;grid-template-rows:auto auto 1fr;grid-template-columns:minmax(0,1fr);min-height:0}
 
 /* Kopf */
 .top{display:flex;align-items:center;gap:28px;padding-block:6px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line);background:var(--bg);min-width:0}
@@ -95,6 +95,48 @@ button,input,select,textarea{font:inherit;color:inherit}
 .tolist{display:none;position:absolute;right:10px;bottom:10px;z-index:800;align-items:center;gap:6px;border:0;border-radius:999px;background:var(--accent);color:#fff;padding:10px 16px;font-size:14px;font-weight:500;box-shadow:var(--shadow);cursor:pointer}
 .mback{display:none;position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);padding:8px 16px}
 .mback button{background:none;border:0;color:var(--accent-ink);font-size:14px;font-weight:500;cursor:pointer;padding:4px 0}
+
+/* Jobs-Ticker */
+.ticker{display:flex;align-items:stretch;border-bottom:1px solid var(--line);background:var(--panel);min-width:0;overflow:hidden;font-size:13.5px}
+.ticker .lbl{flex:none;display:flex;align-items:center;gap:8px;padding-block:7px;padding-right:14px;padding-left:max(16px,env(safe-area-inset-left,0px));background:var(--accent);color:#fff;font-weight:600;white-space:nowrap}
+.ticker .lbl small{font-weight:400;font-size:12.5px;opacity:.92}
+.ticker .lbl .ls{display:none}
+.ticker .vp{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 20px,#000 calc(100% - 20px),transparent);mask-image:linear-gradient(90deg,transparent,#000 20px,#000 calc(100% - 20px),transparent)}
+.ticker .track{display:flex;width:max-content;animation:tick var(--dur,60s) linear infinite}
+.ticker:hover .track,.ticker:focus-within .track{animation-play-state:paused}
+.ticker .job{display:inline-flex;align-items:center;gap:8px;padding:5px 18px;white-space:nowrap;border:0;border-right:1px solid var(--line);background:none;cursor:pointer;color:var(--fg);font-size:13.5px}
+.ticker .job:hover b{color:var(--accent)}
+.ticker .job b{font-weight:500}
+.ticker .job span{color:var(--fg-soft)}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.ticker .track{animation:none}.ticker .vp{overflow-x:auto}}
+@media (max-width:600px){.ticker .lbl .lf{display:none}.ticker .lbl .ls{display:inline}.ticker{font-size:13px}}
+/* Fake-Logos */
+.logo{flex:none;display:inline-block;vertical-align:middle}
+.logo text{font-family:var(--f-body)}
+.logos{display:flex;gap:4px;align-items:center;margin-top:7px;flex-wrap:wrap}
+.logos .more{font-size:12px;color:var(--fg-soft);margin-left:4px;flex:1 1 0;min-width:0;line-height:1.3}
+/* of the week */
+.teaser{margin:14px 20px 0;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+.teaser button{display:flex;gap:8px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--land);border-radius:4px;padding:8px 10px;cursor:pointer;min-width:0}
+.teaser button:hover{border-color:var(--accent)}
+.teaser small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--fg-soft)}
+.teaser b{display:block;font-weight:500;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.teaser .rdot{width:24px;height:24px;border-radius:50%;flex:none;background:var(--land);box-shadow:inset 0 0 0 3px var(--accent)}
+.week{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.spot{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:22px 24px}
+.spot .hd{display:flex;gap:16px;align-items:center;margin-bottom:12px}
+.spot .hd h2{font-size:26px}
+.spot .kw{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--mark);color:#1B1B1D;border-radius:999px;padding:2px 10px;font-weight:600;margin-bottom:10px}
+.spot .intro{font-size:15.5px;line-height:1.6;margin:0}
+.spot blockquote{margin:16px 0 0;padding:4px 0 4px 14px;border-left:3px solid var(--accent);color:var(--accent);font-size:17px;line-height:1.45}
+.spot blockquote small{display:block;color:var(--fg-soft);font-size:12.5px;margin-top:4px}
+.jobs{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.jobs li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--land)}
+.jobs li span{color:var(--fg-soft);white-space:nowrap}
+.weeknote{margin-top:24px;font-size:13.5px;color:var(--fg-soft);max-width:70ch}
+@media (max-width:980px){.week{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:600px){.spot{padding:18px 16px}}
 /* Karte + Spalte */
 .mapwrap{display:grid;grid-template-columns:minmax(0,1fr) 400px;min-height:0}
 .mapcell{position:relative;min-height:0;background:var(--bg)}
@@ -331,10 +373,12 @@ td:first-child{font-weight:500}
       <button data-go="einreichen"><span class="l">Angebot einreichen</span><span class="s">Einreichen</span></button>
       <button data-go="kommune">Kommune</button>
       <button data-go="pruefung">Prüfung <span class="badge" id="qBadge"></span></button>
+      <button data-go="woche"><span class="l">Of the week</span><span class="s">Woche</span></button>
       <button data-go="funktionen"><span class="l">So funktioniert’s</span><span class="s">Infos</span></button>
     </nav>
     <div class="who"><span>Profil:</span><button id="whoBtn" data-go="profil"></button></div>
   </header>
+  <div class="ticker" id="ticker" role="region" aria-label="Jobs of the week"><div class="lbl" id="tickLbl"></div><div class="vp"><div class="track" id="tickTrack"></div></div></div>
 
   <!-- KARTE -->
   <section class="view" id="v-karte" aria-label="Karte">
@@ -507,6 +551,11 @@ td:first-child{font-weight:500}
         <div class="card" id="qDetail"></div>
       </div>
     </div>
+  </section>
+
+  <!-- OF THE WEEK -->
+  <section class="view" id="v-woche" hidden>
+    <div class="page" id="weekPage"></div>
   </section>
 
   <!-- FUNKTIONEN -->
@@ -1110,7 +1159,14 @@ function match(p,o){
 }
 /* Engagements: wer unterstützt welches Angebot */
 const ENG=[];
-OFFERS.filter(o=>o.status==='live').forEach(o=>{if(R()<.3){const c=SUPPORTERS.filter(s=>{const m=match(s,o);return m.ok&&m.scope==='regional'});pickN(c,R()<.3?2:1).forEach(s=>ENG.push({sid:s.id,oid:o.id,kind:inter(o.support,s.support)[0]}))}});
+OFFERS.filter(o=>o.status==='live').forEach(o=>{if(R()<.45){const c=SUPPORTERS.filter(s=>{const m=match(s,o);return m.ok&&m.scope==='regional'});pickN(c,R()<.3?2:1).forEach(s=>ENG.push({sid:s.id,oid:o.id,kind:inter(o.support,s.support)[0]}))}});
+
+/* Jobs unterstützender Unternehmen (Beispieldaten) */
+const JOBT=[['Ausbildung','Mechatroniker:in'],['Ausbildung','Industriekaufmann/-frau'],['Ausbildung','Elektroniker:in für Betriebstechnik'],['Duales Studium','BWL Mittelstand'],['Duales Studium','Wirtschaftsinformatik'],['Werkstudent:in','Marketing & Kommunikation'],['Vollzeit','Projektingenieur:in'],['Vollzeit','Fachinformatiker:in'],['Vollzeit','Personalreferent:in'],['Teilzeit','Kaufmann/-frau für Büromanagement'],['Vollzeit','Berufskraftfahrer:in'],['Ausbildung','Zimmerer/Zimmerin'],['Vollzeit','Technische:r Produktdesigner:in'],['Ausbildung','Fachkraft für Lagerlogistik']];
+const JOBS=[];
+[...new Set(ENG.map(e=>e.sid))].map(id=>SUPID[id]).filter(s=>s.pub&&s.type!=='stiftung').forEach(s=>{pickN(JOBT,1+Math.floor(R()*3)).forEach(([kind,title])=>JOBS.push({sid:s.id,kind,title,city:s.city,lat:s.lat,lng:s.lng}))});
+function isoWeek(d){d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);const y=new Date(Date.UTC(d.getUTCFullYear(),0,1));return Math.ceil(((d-y)/864e5+1)/7)}
+const KW=isoWeek(new Date());
 const engOf=oid=>ENG.filter(e=>e.oid===oid);
 const engBy=sid=>ENG.filter(e=>e.sid===sid);
 function titleSim(a,b){const w=s=>new Set(s.toLowerCase().replace(/[^a-zäöüß0-9 ]/g,' ').split(/\s+/).filter(x=>x.length>3));const A=w(a),B=w(b);if(!A.size||!B.size)return 0;let n=0;A.forEach(x=>{if([...B].some(y=>y.includes(x.slice(0,6))||x.includes(y.slice(0,6))))n++});return n/Math.max(A.size,B.size)}
@@ -1150,6 +1206,16 @@ function chipGroup(el,arr,getSet,onChange,{single=false,color=false,max=0,order=
 }
 const asItems=a=>a.map(x=>typeof x==='string'?{id:x,label:x}:x);
 const initials=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const LCOL=['#2F6F8F','#7667CE','#C2685F','#3F9985','#D29514','#A9619A','#4D86BB','#789A43','#A77A48','#3E4A59'];
+function logoSVG(s,px){const n=+String(s.id).replace(/\D/g,'')||0;const c=LCOL[n%LCOL.length];const sh=Math.floor(n/LCOL.length)%6;const ini=initials(s.name);const l1=ini[0];let m;
+ if(sh===0)m=`<circle cx="20" cy="20" r="13" fill="${c}"/><text x="20" y="25" text-anchor="middle" font-size="14" font-weight="600" fill="#fff">${l1}</text>`;
+ else if(sh===1)m=`<rect x="7" y="7" width="26" height="26" rx="5" fill="${c}"/><text x="20" y="24.5" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">${ini}</text>`;
+ else if(sh===2)m=`<path d="M20 6 32 13v14L20 34 8 27V13Z" fill="${c}"/><text x="20" y="25" text-anchor="middle" font-size="13" font-weight="600" fill="#fff">${l1}</text>`;
+ else if(sh===3)m=`<rect x="8" y="10" width="24" height="5" rx="2.5" fill="${c}"/><rect x="8" y="18" width="17" height="5" rx="2.5" fill="${c}" opacity=".7"/><rect x="8" y="26" width="10" height="5" rx="2.5" fill="${c}" opacity=".45"/>`;
+ else if(sh===4)m=`<circle cx="20" cy="20" r="11.5" fill="none" stroke="${c}" stroke-width="5"/><circle cx="20" cy="20" r="3.5" fill="${c}"/>`;
+ else m=`<path d="M6 31 16 13l6 10 4-6 8 14Z" fill="${c}"/><circle cx="28" cy="11" r="3" fill="${c}" opacity=".6"/>`;
+ return `<svg class="logo" width="${px}" height="${px}" viewBox="0 0 40 40" role="img" aria-label="Logo ${esc(s.name)} (Beispiel)"><rect x=".5" y=".5" width="39" height="39" rx="8" fill="#fff" stroke="#D9D4C9"/>${m}</svg>`}
+
 
 /* ---------- Karte (ausschließlich Punkte) ---------- */
 const map=L.map('map',{zoomControl:false,attributionControl:false,minZoom:5,maxZoom:13,zoomSnap:.5,wheelPxPerZoomLevel:90,maxBounds:[[45.8,3.5],[56.4,17.5]],maxBoundsViscosity:.8});
@@ -1244,7 +1310,7 @@ function engagedNear(){
  ENG.forEach(e=>{const o=OFFERS.find(x=>x.id===e.oid);const s=SUPID[e.sid];if(s.pub&&dist(home,o)<=profile.radius)ids.add(s.id)});
  return [...ids].map(id=>SUPID[id]).sort((a,b)=>engBy(b.id).length-engBy(a.id).length);
 }
-function supCard(s){const e=engBy(s.id);return `<div class="sup" data-s="${s.id}" tabindex="0"><span class="ini">${esc(initials(s.name))}</span><div><div class="nm">${esc(s.name)}</div><div class="kd">${esc(s.city)} · engagiert bei ${e.length} ${e.length===1?'Angebot':'Angeboten'}</div></div></div>`}
+function supCard(s){const e=engBy(s.id);return `<div class="sup" data-s="${s.id}" tabindex="0">${logoSVG(s,36)}<div><div class="nm">${esc(s.name)}</div><div class="kd">${esc(s.city)} · engagiert bei ${e.length} ${e.length===1?'Angebot':'Angeboten'}</div></div></div>`}
 function renderSide(){
  if(selected&&selected.type==='offer')return renderOffer(selected.id);
  if(selected&&selected.type==='komm')return renderKomm(selected.id);
@@ -1257,10 +1323,11 @@ function renderSide(){
  const list=listMode==='regional'?reg:listMode==='ueberregional'?ueb:sav;
  let body;
  if(listMode==='engagiert')body=eng.length?`<div class="pad" style="padding-top:4px"><p class="note" style="margin:0 0 10px">Unternehmen und Stiftungen, die sich in deinem Umkreis sichtbar engagieren.</p>${eng.map(supCard).join('')}</div>`:'<div class="empty">Noch keine sichtbaren Engagements in deinem Umkreis.</div>';
- else body=list.length?`<ul class="list">${list.map(({o,r})=>{const e=engOf(o.id).filter(x=>SUPID[x.sid].pub);return `<li class="item" data-o="${o.id}" tabindex="0">${pdot(shownTheme(o,r))}<div><div class="t">${esc(o.title)}</div><div class="m">${esc(o.org)} · ${esc(o.city)} · ${km(r.d)}</div><div class="tags">${o.tags.slice(0,2).map(t=>`<span class="tag hl">${esc(t)}</span>`).join('')}${e.length?`<span class="tag on">Unterstützt von ${esc(SUPID[e[0].sid].name)}${e.length>1?' +'+(e.length-1):''}</span>`:''}</div></div><div class="s">${r.ok?r.score+' %':'–'}<small>${r.ok?'Passung':'kein Treffer'}</small></div></li>`}).join('')}</ul>`
+ else body=list.length?`<ul class="list">${list.map(({o,r})=>{const e=engOf(o.id).filter(x=>SUPID[x.sid].pub);return `<li class="item" data-o="${o.id}" tabindex="0">${pdot(shownTheme(o,r))}<div><div class="t">${esc(o.title)}</div><div class="m">${esc(o.org)} · ${esc(o.city)} · ${km(r.d)}</div><div class="tags">${o.tags.slice(0,2).map(t=>`<span class="tag hl">${esc(t)}</span>`).join('')}</div>${e.length?`<div class="logos">${e.slice(0,4).map(x=>logoSVG(SUPID[x.sid],26)).join('')}<span class="more">Unterstützt von ${esc(SUPID[e[0].sid].name)}${e.length>1?' +'+(e.length-1):''}</span></div>`:''}</div><div class="s">${r.ok?r.score+' %':'–'}<small>${r.ok?'Passung':'kein Treffer'}</small></div></li>`}).join('')}</ul>`
   :`<div class="empty">${listMode==='saved'?'Noch nichts gemerkt. Öffne ein Angebot und tippe auf „Merken“.':listMode==='ueberregional'&&!profile.ueber?'Überregionale Vorschläge sind in deinem Profil ausgeschaltet.':'Keine Treffer mit den aktuellen Filtern. Setze Filter zurück oder erweitere dein Profil.'}</div>`;
  $('#sideBody').innerHTML=`${welcomeOff?'':`<div class="welcome"><button class="x" id="wOff" aria-label="Einstieg ausblenden">×</button><p><b>Willkommen.</b> Wie möchtest du dich einbringen?</p><div class="acts">
   <button data-go="profil">Ich möchte unterstützen <span>Profil anlegen</span></button><button data-go="einreichen">Wir haben ein Angebot <span>Eintrag anlegen</span></button><button data-go="kommune">Wir sind eine Kommune <span>Positionieren</span></button></div></div>`}
+ ${teaserHTML()}
  <div class="pad"><p class="eyebrow">Für dein Profil</p><h3>${esc(profile.name)}</h3><p class="lead">${esc(profile.city)} · ${profile.radius} km Umkreis${profile.ueber?' · auch überregional':''}</p>
  <div class="profsum">${profile.themes.map(t=>`<span class="tag">${pdot(t)}${esc(L_(CATS,t))}</span>`).join('')}</div>
  <div class="seg" role="group" aria-label="Trefferliste">${[['regional','Regional',reg.length],['ueberregional','Überregional',ueb.length],['engagiert','Engagierte',eng.length],['saved','Gemerkt',sav.length]].map(([id,l,n])=>`<button data-m="${id}" aria-pressed="${listMode===id}">${l}<b>${n}</b></button>`).join('')}</div></div>${body}`;
@@ -1299,7 +1366,7 @@ function renderOffer(id){
  <div class="sec"><h4>Was fehlt</h4><div class="profsum" style="margin:0 0 8px">${o.support.map(s=>`<span class="tag${r.sup.includes(s)?' on':''}">${esc(L_(SUP,s))}</span>`).join('')}</div>
  ${o.need.amount?`<div class="bar"><i style="width:${Math.min(100,pct)}%"></i></div><div class="barlbl"><span>${fmtEur(o.need.secured)} gesichert</span><span>Ziel ${fmtEur(o.need.amount)}</span></div>`:''}
  ${o.helpers?`<p class="note">Gesucht: ${o.helpers} helfende Hände</p>`:''}</div>
- <div class="sec"><h4>Engagiert hier</h4>${engPub.length?engPub.map(e=>`<div class="sup" data-s="${e.sid}" tabindex="0"><span class="ini">${esc(initials(SUPID[e.sid].name))}</span><div><div class="nm">${esc(SUPID[e.sid].name)}</div><div class="kd">${esc(L_(SUP,e.kind).replace(/^.*$/,()=>SUP.find(x=>x.id===e.kind).short))} · ${esc(SUPID[e.sid].city)}</div></div></div>`).join(''):'<p class="note" style="margin:0">Noch niemand. Ihr könntet die Ersten sein.</p>'}
+ <div class="sec"><h4>Engagiert hier</h4>${engPub.length?engPub.map(e=>`<div class="sup" data-s="${e.sid}" tabindex="0">${logoSVG(SUPID[e.sid],36)}<div><div class="nm">${esc(SUPID[e.sid].name)}</div><div class="kd">${esc(L_(SUP,e.kind).replace(/^.*$/,()=>SUP.find(x=>x.id===e.kind).short))} · ${esc(SUPID[e.sid].city)}</div></div></div>`).join(''):'<p class="note" style="margin:0">Noch niemand. Ihr könntet die Ersten sein.</p>'}
  ${eng.length>engPub.length?`<p class="note">${eng.length-engPub.length} weitere Unterstützende engagieren sich ohne öffentliche Nennung.</p>`:''}</div>
  <div class="sec"><h4>Mehrwert für Unterstützende</h4><div class="profsum" style="margin:0">${o.goals.map(s=>`<span class="tag${r.g.includes(s)?' on':''}">${esc(L_(GOALS,s))}</span>`).join('')}</div></div>
  <div class="sec"><h4>Warum (nicht) passend</h4>${whyList(r)}</div>
@@ -1315,10 +1382,11 @@ function renderOffer(id){
 function renderSup(sid){
  const s=SUPID[sid];const e=engBy(sid);
  $('#sideBody').innerHTML=`<div class="pad"><button class="back" id="bk">← Zurück zur Liste</button>
- <p class="eyebrow">${esc(L_(PTYPES,s.type))} · engagiert sich sichtbar</p><h2>${esc(s.name)}</h2><p class="meta">${esc(s.city)}</p>
+ <p class="eyebrow">${esc(L_(PTYPES,s.type))} · engagiert sich sichtbar${weekSponsor().id===s.id?' · Sponsor of the week':''}</p><div style="display:flex;gap:12px;align-items:center">${logoSVG(s,48)}<div><h2>${esc(s.name)}</h2><p class="meta" style="margin-top:2px">${esc(s.city)}</p></div></div>
  <div class="profsum">${s.themes.map(t=>`<span class="tag">${pdot(t)}${esc(L_(CATS,t))}</span>`).join('')}</div>
  <div class="sec"><h4>Engagiert bei</h4><p class="note" style="margin:0 0 6px">Auf der Karte lila umrandet.</p><ul class="mini">${e.map(x=>{const o=OFFERS.find(y=>y.id===x.oid);return `<li data-o="${o.id}" tabindex="0">${pdot(o.themes[0])}<span class="tt">${esc(o.title)} <span style="color:var(--fg-soft)">· ${esc(o.city)}</span></span><span class="km">${esc(SUP.find(y=>y.id===x.kind).short)}</span></li>`}).join('')}</ul></div>
- <div class="sec"><h4>Unterstützt mit</h4><div class="profsum" style="margin:0">${s.support.map(x=>`<span class="tag">${esc(L_(SUP,x))}</span>`).join('')}</div></div></div>`;
+ <div class="sec"><h4>Unterstützt mit</h4><div class="profsum" style="margin:0">${s.support.map(x=>`<span class="tag">${esc(L_(SUP,x))}</span>`).join('')}</div></div>
+ ${jobsOf(s.id).length?`<div class="sec"><h4>Offene Stellen</h4>${jobsHTML(jobsOf(s.id))}</div>`:''}</div>`;
  $('#bk').onclick=()=>{selected=null;hlSid=null;renderPoints();renderSide()};bindItems($('#sideBody'));$('#side').scrollTop=0;
 }
 function kommStats(k){
@@ -1349,6 +1417,66 @@ function refresh(){computeMatches();if(selected&&selected.type==='offer'&&!visib
 $('#zin').onclick=()=>map.zoomIn();$('#zout').onclick=()=>map.zoomOut();
 $('#zde').onclick=()=>map.flyToBounds(land.getBounds(),{padding:[16,16],duration:.8});
 $('#zme').onclick=()=>{const c=CITY[profile.city];map.flyTo([c.lat,c.lng],10,{duration:.8})};
+
+
+/* ---------- Jobs of the week (Ticker) ---------- */
+const jobsOf=sid=>JOBS.filter(j=>j.sid===sid);
+function jobsHTML(list){return `<ul class="jobs">${list.map(j=>`<li><b style="font-weight:500">${esc(j.kind)} · ${esc(j.title)}</b><span>${esc(j.city)}</span></li>`).join('')}</ul>`}
+function hashN(str){let h=2166136261;for(const ch of str){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function nearestBig(c){let best=CITIES[0],bd=1e9;CITIES.filter(x=>x.w>=3).forEach(x=>{const d=dist(c,x);if(d<bd){bd=d;best=x}});return best.name}
+let tickKey='';
+function updateTicker(){
+ const z=map.getZoom();let list,label;
+ if(z>=7.5){const b=map.getBounds().pad(.15);const c=map.getCenter();list=JOBS.filter(j=>b.contains([j.lat,j.lng]));
+  if(list.length<4)list=JOBS.slice().sort((a,bb)=>dist(c,a)-dist(c,bb)).slice(0,6);
+  list=list.slice().sort((a,bb)=>dist(c,a)-dist(c,bb)).slice(0,14);label='Region '+nearestBig(c)}
+ else{list=JOBS.slice().sort((a,bb)=>hashN(KW+a.sid+a.title)-hashN(KW+bb.sid+bb.title)).slice(0,14);label='deutschlandweit'}
+ const key=label+'|'+list.map(j=>j.sid+j.title).join(',');if(key===tickKey)return;tickKey=key;
+ $('#tickLbl').innerHTML=`<span class="lf">Jobs of the week</span><span class="ls">Jobs</span><small>${esc(label)}</small>`;
+ const one=list.map(j=>`<button type="button" class="job" data-s="${j.sid}">${logoSVG(SUPID[j.sid],22)}<b>${esc(j.kind)} · ${esc(j.title)}</b><span>${esc(SUPID[j.sid].name)} · ${esc(j.city)}</span></button>`);
+ let half=one.slice();while(half.length<8)half=half.concat(one);
+ const dup=half.map(h=>h.replace('class="job"','class="job" aria-hidden="true" tabindex="-1"'));
+ $('#tickTrack').innerHTML=half.join('')+dup.join('');
+ $('#tickTrack').style.setProperty('--dur',Math.max(30,half.length*5)+'s');
+ bindItems($('#ticker'));
+}
+let tickT;map.on('moveend',()=>{clearTimeout(tickT);tickT=setTimeout(updateTicker,250)});
+
+/* ---------- Sponsor & Region of the week ---------- */
+function weekSponsor(){const top=SUPPORTERS.filter(s=>s.pub&&engBy(s.id).length>=2).sort((a,b)=>engBy(b.id).length-engBy(a.id).length||a.id.localeCompare(b.id)).slice(0,6);return top[KW%top.length]||SUPPORTERS[0]}
+function weekRegion(){return KOMMUNEN[KW%KOMMUNEN.length]}
+function teaserHTML(){const s=weekSponsor(),k=weekRegion();return `<div class="teaser"><button data-go="woche">${logoSVG(s,28)}<span style="min-width:0"><small>Sponsor of the week</small><b>${esc(s.name)}</b></span></button><button data-go="woche"><span class="rdot"></span><span style="min-width:0"><small>Region of the week</small><b>${esc(k.city)}</b></span></button></div>`}
+const SPONSOR_Q={fach:'Wer junge Menschen in seiner Region begeistert, findet auch seinen Nachwuchs.',team:'Unsere Leute packen selbst mit an. Das stärkt den Zusammenhalt im ganzen Betrieb.',esg:'Engagement vor der Haustür ist für uns gelebte Nachhaltigkeit, nicht nur ein Bericht.',marke:'Man kennt uns jetzt nicht nur als Arbeitgeber, sondern als Teil der Gemeinschaft.',region:'Wir wollen, dass unsere Region lebens- und liebenswert bleibt.',sicht:'Wir sind dort sichtbar, wo die Menschen unserer Region zusammenkommen.',innov:'Aus Partnerschaften mit Vereinen entstehen bei uns neue Ideen.'};
+function renderWeek(){
+ const s=weekSponsor(),k=weekRegion(),e=engBy(s.id),st=kommStats(k),ind=s.name.split(' ').slice(1).join(' ');
+ const offers=e.map(x=>OFFERS.find(o=>o.id===x.oid));
+ const q=SPONSOR_Q[s.goals.find(g=>SPONSOR_Q[g])]||SPONSOR_Q.region;
+ const kc=CITY[k.city];
+ $('#weekPage').innerHTML=`<div class="page-head"><p class="eyebrow">Kalenderwoche ${KW}</p><h1>Diese Woche <span class="ac">im Fokus.</span></h1><p>Jede Woche stellen sich ein Sponsor und eine Region vor: wer sie sind, wofür sie sich engagieren und wo man mitmachen kann.</p></div>
+ <div class="week">
+  <article class="spot"><span class="kw">Sponsor of the week</span>
+   <div class="hd">${logoSVG(s,72)}<div><h2>${esc(s.name)}</h2><p class="meta" style="margin-top:4px">${esc(L_(PTYPES,s.type))} · ${esc(s.city)}</p></div></div>
+   <p class="intro">Wir sind ${esc(s.name)} aus ${esc(s.city)}${s.type==='stiftung'?'':`, ein mittelständischer Betrieb im Bereich ${esc(ind)}`}. Über be. involved. unterstützen wir ${e.length} Projekte in unserer Region, vor allem in den Themen ${s.themes.slice(0,2).map(t=>esc(L_(CATS,t))).join(' und ')}.</p>
+   <blockquote>„${esc(q)}“<small>Geschäftsführung, ${esc(s.name)} (Beispielzitat)</small></blockquote>
+   <div class="stat"><div><b>${e.length}</b><span>unterstützte Projekte</span></div><div><b>${s.support.length}</b><span>Arten der Unterstützung</span></div><div><b>${jobsOf(s.id).length}</b><span>offene Stellen</span></div></div>
+   <div class="sec"><h4>Engagiert bei</h4>${miniList(offers.map(x=>({x,d:dist(CITY[s.city],x)})))}</div>
+   ${jobsOf(s.id).length?`<div class="sec"><h4>Offene Stellen</h4>${jobsHTML(jobsOf(s.id))}</div>`:''}
+   <div class="btns"><button class="btn" data-s="${s.id}">Engagements auf der Karte</button></div>
+  </article>
+  <article class="spot"><span class="kw">Region of the week</span>
+   <div class="hd"><span class="rdot" style="width:56px;height:56px;border-radius:50%;flex:none;background:var(--land);box-shadow:inset 0 0 0 6px var(--accent)"></span><div><h2>${esc(k.city)}</h2><p class="meta" style="margin-top:4px">Kommune · Gebiet ${k.radius} km</p></div></div>
+   <p class="intro">${esc(k.claim)} Wir suchen Partner, die mit uns ${k.ch.slice(0,2).map(x=>esc(L_(CH,x)).toLowerCase().replace('innenstadt','Innenstadt')).join(' und ')} angehen. Besonders am Herzen liegen uns ${k.themes.map(t=>esc(L_(CATS,t))).join(', ')}.</p>
+   <div class="stat"><div><b>${st.inArea.length}</b><span>Angebote im Gebiet</span></div><div><b>${st.open.length}</b><span>mit offenem Bedarf</span></div><div><b>${st.eng.length}</b><span>engagierte Unterstützende</span></div></div>
+   <div class="sec"><h4>Das bringt die Kommune ein</h4><div class="profsum" style="margin:0">${k.give.map(x=>`<span class="tag on">${esc(L_(KGIVE,x))}</span>`).join('')}</div></div>
+   <div class="sec"><h4>Hier könnt ihr mitmachen</h4>${st.fit.length?miniList(st.fit.slice(0,5).map(x=>({x,d:dist(kc,x)}))):'<p class="note" style="margin:0">Noch keine Angebote im Gebiet.</p>'}</div>
+   ${st.eng.length?`<div class="sec"><h4>Engagiert in der Region</h4><div class="logos" style="margin:0">${st.eng.slice(0,8).map(x=>`<span data-s="${x.id}" tabindex="0" style="cursor:pointer" title="${esc(x.name)}">${logoSVG(x,34)}</span>`).join('')}</div></div>`:''}
+   <div class="btns"><button class="btn" id="wkRegion">Region auf der Karte</button></div>
+  </article>
+ </div>
+ <p class="weeknote">Ihr möchtet euch als Sponsor oder Region der Woche vorstellen? Das be. involved.-Team wählt jede Woche aus allen sichtbar Engagierten und positionierten Kommunen aus. Texte, Zitate und Logos sind im Prototyp Beispiele.</p>`;
+ bindItems($('#weekPage'));
+ $('#wkRegion').onclick=()=>{go('karte');mapMove(()=>map.flyTo([kc.lat,kc.lng],10,{duration:.8}));selectKommune(k.id)};
+}
 
 /* ---------- Profil (Unterstützende) ---------- */
 let draft=null;
@@ -1559,6 +1687,11 @@ function renderDoc(){
  </tbody></table></div>
  <p>Grundwert eines Treffers sind 35 Punkte, das Maximum 100. Die Unterstützungsarten entsprechen den Leistungen auf der Website.</p>
 
+ <h2>Jobs, Logos und „of the week“</h2>
+ <ul><li><b>Jobs of the week:</b> Ein Laufband unter dem Menü zeigt offene Stellen von Unternehmen, die sich bereits engagieren. In der Deutschlandansicht läuft eine bundesweite Auswahl der Woche; sobald man in eine Region zoomt, zeigt es die Stellen aus dem sichtbaren Kartenausschnitt und nennt die Region. Beim Darüberfahren hält es an, ein Klick öffnet das Unternehmen mit allen Engagements und Stellen.</li>
+ <li><b>Logos:</b> In der Trefferliste, beim Angebot unter „Engagiert hier“ und in den Profilen erscheinen die Logos der unterstützenden Marken. Im Prototyp sind es erfundene Platzhalter-Logos.</li>
+ <li><b>Sponsor &amp; Region of the week:</b> Ein eigener Bereich stellt jede Woche einen Sponsor und eine Kommune vor, mit Vorstellungstext, Zitat, Kennzahlen, Engagements, offenen Stellen bzw. Mitmach-Angeboten. Ein Hinweis darauf steht oben in der Seitenspalte der Karte.</li></ul>
+
  <h2>Was der Prototyp zeigt und was nicht</h2>
  <ul><li>Alle Angebote, Unternehmen und Kommunen sind <b>Beispieldaten</b>; Namen sind erfunden.</li><li>Die Karte zeigt Länder- und Kreisgrenzen sowie Ortsnamen. Straßen und Stadtteile kommen in der Plattform über einen Kartendienst dazu (z. B. OpenStreetMap-Vektorkarten).</li><li>Die Prüfansicht ist nur für das be. involved.-Team gedacht und im Prototyp nur über den Team-Link erreichbar (Adresse mit <span class="copy">#team</span> am Ende). In der echten Plattform schützt ein Login diesen Bereich. Es werden keine E-Mails oder Nachrichten verschickt.</li><li>Profil und Merkliste bleiben nur in diesem Browser gespeichert; Einreichungen und Prüfentscheidungen nur für die aktuelle Sitzung.</li></ul>`;
 }
@@ -1566,11 +1699,11 @@ function renderDoc(){
 /* ---------- Ansichten ---------- */
 const TEAM=/team|pruefung/.test(location.hash+location.search);
 if(!TEAM){const nb=document.querySelector('.nav [data-go="pruefung"]');if(nb)nb.remove()}
-const VIEWS=['karte','profil','einreichen','kommune','funktionen'].concat(TEAM?['pruefung']:[]);
+const VIEWS=['karte','profil','einreichen','kommune','woche','funktionen'].concat(TEAM?['pruefung']:[]);
 function go(v){if(!VIEWS.includes(v))v='karte';VIEWS.forEach(x=>$('#v-'+x).hidden=x!==v);
  document.querySelectorAll('.nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.go===v));
  if(v==='karte')setTimeout(()=>map.invalidateSize(),0);
- if(v==='profil')profileForm();if(v==='kommune')kCock();if(v==='einreichen'){wSide();renderMine()}if(v==='pruefung')renderQueue();
+ if(v==='profil')profileForm();if(v==='kommune')kCock();if(v==='einreichen'){wSide();renderMine()}if(v==='pruefung')renderQueue();if(v==='woche')renderWeek();
  try{history.replaceState(null,'','#'+v)}catch(e){}
  const el=$('#v-'+v);if(el&&v!=='karte')el.scrollTop=0;
 }
@@ -1581,6 +1714,7 @@ new MutationObserver(restyle).observe(document.documentElement,{attributes:true,
 window.addEventListener('resize',()=>{clearTimeout(window.__rz);window.__rz=setTimeout(()=>{map.invalidateSize();renderLegend()},150)});
 
 styleBase();updateWho();wForm();kForm();renderDoc();updateBadge();computeMatches();renderPoints();renderKommunen();renderSide();updateLabels();
+updateTicker();
 go(TEAM&&/team/.test(location.hash)?'pruefung':(location.hash||'#karte').slice(1));
 })();
 </script>
